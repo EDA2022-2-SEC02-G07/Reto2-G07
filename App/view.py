@@ -25,7 +25,7 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
-
+from tabulate import tabulate
 
 """
 La vista se encarga de la interacción con el usuario
@@ -38,9 +38,14 @@ def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
     print("2- ")
-
+def printreq3(catalog,actor):
+    list,m,s = controller.ContentByActor(catalog,actor)
+    print("Peliculas:",m)
+    print("Shows",s)
+    for i in lt.iterator(list):
+        print(i)
 catalog = None
-
+size = "-10pct"
 """
 Menu principal
 """
@@ -49,9 +54,12 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-
+        if catalog == None:
+            catalog = controller.newController()
+        controller.loadData(catalog,size)
     elif int(inputs[0]) == 2:
-        pass
+        a = input("Ingrese el nombre del actor: ")
+        printreq3(catalog,a)
 
     else:
         sys.exit(0)

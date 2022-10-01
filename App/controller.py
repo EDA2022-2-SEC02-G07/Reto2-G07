@@ -29,10 +29,41 @@ import csv
 El controlador se encarga de mediar entre la vista y el modelo.
 """
 
-# Inicialización del Catálogo de libros
-
+# Inicialización del Catálogo
+def newController():
+    """
+    Crea una instancia del modelo
+    """
+    control = {
+        'model': model.newCatalog()
+    }
+    return control
 # Funciones para la carga de datos
-
+def loadData(control,size):
+    """
+    Carga los datos de los archivos y cargar los datos en la
+    estructura de datos
+    """
+    catalog = control['model']
+    amazonPrimeContent = loadContentData(catalog,size,"amazon_prime")
+    disneyPlusContent = loadContentData(catalog,size,"disney_plus")
+    huluContent = loadContentData(catalog,size,"hulu")
+    netflixContent = loadContentData(catalog,size,"netflix")
+    
+    return amazonPrimeContent, disneyPlusContent, huluContent, netflixContent
+def loadContentData(catalog,size,platform):
+    file = 'Streaming/'+platform+'_titles-utf8'+size+'.csv'
+    contentfile = cf.data_dir + file
+    input_file = csv.DictReader(open(contentfile, encoding='utf-8'))
+    for content in input_file:
+        content["streaming_service"] = platform
+        for key in content:
+            if content[key] == "":
+                content[key] = "unknown"
+        model.add_content(catalog, content)
+    return catalog
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def ContentByActor(catalog,actor):
+    return model.ContentByActor(catalog["model"],actor)
