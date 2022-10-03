@@ -25,6 +25,7 @@
  """
 
 
+from gettext import Catalog
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -45,9 +46,7 @@ def newCatalog():
                 "MapActor":mp.newMap(),
                 "MapListedIn":mp.newMap(),
                 "MapCountry":mp.newMap(),
-                "MapDirector":mp.newMap(),
-                "Listed_in_list":lt.newList("ARRAY_LIST"),
-                "Actor_List":lt.newList()}
+                "MapDirector":mp.newMap()}
     return catalog
 # Funciones para agregar informacion al catalogo
 def add_content(catalog,content):
@@ -71,19 +70,15 @@ def add_content(catalog,content):
         if mp.contains(catalog["MapActor"],actor) == True:
             lt.addLast(me.getValue(mp.get(catalog["MapActor"],actor)),content)
         else:
-            mp.put(catalog["MapActor"],actor,lt.newList("ARRAY_LIST"))
+            mp.put(catalog["MapActor"],actor,lt.newList("SINGLE_LINKED"))
             lt.addLast(me.getValue(mp.get(catalog["MapActor"],actor)),content)
-        if lt.isPresent(catalog["Actor_List"],actor) == False:
-            lt.addLast(catalog["Actor_List"],actor)
     for genre in content["listed_in"].split(","):
         genre = genre.strip()
         if mp.contains(catalog["MapListedIn"],genre) == True:
             lt.addLast(me.getValue(mp.get(catalog["MapListedIn"],genre)),content)
         else:
-            mp.put(catalog["MapListedIn"],genre,lt.newList("ARRAY_LIST"))
+            mp.put(catalog["MapListedIn"],genre,lt.newList("SINGLE_LINKED"))
             lt.addLast(me.getValue(mp.get(catalog["MapListedIn"],genre)),content)
-        if lt.isPresent(catalog["Listed_in_list"],genre) == False:
-            lt.addLast(catalog["Listed_in_list"],genre)
     for country in content["country"].split(","):
         country = country.strip()
         if mp.contains(catalog["MapCountry"],country) == True:
@@ -117,6 +112,20 @@ def ContentByActor(catalog,actor): #Función Principal Requerimiento 3
             shows += 1
     merg.sort(ActorList,CMPContentByActor)
     return ActorList,movies,shows
+def TopNGenres(catalog,N):
+    GenresMap = catalog["MapListedIn"]
+    GenresList = mp.keySet(GenresMap)
+    GenreSizeList = lt.newList("ARRAY_LIST")
+    for genre in lt.iterator(GenresList):
+        type_dict = {"Movie":0,"TV Show":0}
+        stream_dict = {"amazon_prime":0,"disney_plus":0,"hulu":0,"netflix":0}
+        title = me.getValue(mp.get(GenresMap,genre))
+        for i in lt.iterator(title):
+            type_dict[i["type"]] += 1
+            stream_dict[i["streaming_service"]] += 1
+        lt.addLast(GenreSizeList,{"genre":genre,"size":lt.size(title),"type":type_dict,"stream":stream_dict})
+    merg.sort(GenreSizeList,CMPTopGenres)
+    return lt.subList(GenreSizeList,1,N)
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
@@ -129,5 +138,10 @@ def CMPContentByActor(title1,title2): #CMP Requerimiento 3
         elif title1["title"] == title2["title"]:
             if title1["duration"] < title2["duration"]:
                 return True
+    else:
+        return False
+def CMPTopGenres(title1,title2):
+    if title1["size"] > title2["size"]:
+        return True
     else:
         return False
