@@ -94,6 +94,14 @@ def add_content(catalog,content):
             mp.put(catalog["MapDirector"],director,lt.newList("ARRAY_LIST"))
             lt.addLast(me.getValue(mp.get(catalog["MapDirector"],director)),content)
     return catalog
+def addContent_Lab7(catalog,content):
+    for genre in content["listed_in"].split(","):
+        if mp.contains(catalog["MapListedIn"],genre) == True:
+            lt.addLast(me.getValue(mp.get(catalog["MapListedIn"],genre)),content)
+        else:
+            mp.put(catalog["MapListedIn"],genre,lt.newList("SINGLE_LINKED"))
+            lt.addLast(me.getValue(mp.get(catalog["MapListedIn"],genre)),content)
+    return catalog
 # Funciones para creacion de datos
 
 # Funciones de consulta

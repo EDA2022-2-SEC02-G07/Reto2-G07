@@ -45,6 +45,7 @@ def printMenu():
     print("7- Encontrar el contenido con un director involucrado")
     print("8- Listar TOP (N) de los géneros con más contenido")
     print("9- Listar TOP (N) de actores más populares para un género específico")
+    print("10- Calcular ms y kb")
 
 def printreq3(catalog,actor):
     list,movies,shows = controller.ContentByActor(catalog,actor)
@@ -84,7 +85,8 @@ def printreq7(catalog,N):
         str1 = tabulate([["type","count"],["Movies",i["type"]["Movie"]],["TV Shows",i["type"]["TV Show"]]],tablefmt="plain")
         str2_list = [["stream_service","count"]]
         for key in i["stream"]:
-            str2_list.append([key,i["stream"][key]])
+            if i["stream"][key] > 0:
+                str2_list.append([key,i["stream"][key]])
         str2 = tabulate(str2_list,tablefmt="plain")
         print_list1.append([i["genre"],i["size"]])
         print_list2.append([rank,i["genre"],i["size"],str1,str2])
@@ -92,7 +94,7 @@ def printreq7(catalog,N):
     print(tabulate(print_list1,tablefmt="grid"))
     print(tabulate(print_list2,tablefmt="grid"))
 catalog = None
-size = "-small"
+size = "-large"
 """
 Menu principal
 """
@@ -110,6 +112,8 @@ while True:
     elif int(inputs) == 8:
         N = int(input("Ingrese el número N para el top: "))
         printreq7(catalog,N)
+    elif int(inputs) == 10:
+        type = input("Ingrese el tipo de mapa ")
     else:
         sys.exit(0)
 sys.exit(0)
