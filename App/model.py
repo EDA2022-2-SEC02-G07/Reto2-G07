@@ -38,9 +38,18 @@ los mismos.
 """
 
 # Construccion de modelos
-
+def newCatalog(type,FC):
+    catalog = {"MapListedIn":mp.newMap(maptype=type,loadfactor = FC)}
+    return catalog
 # Funciones para agregar informacion al catalogo
-
+def addContent(catalog,content):
+    for genre in content["listed_in"].split(","):
+        if mp.contains(catalog["MapListedIn"],genre) == True:
+            lt.addLast(me.getValue(mp.get(catalog["MapListedIn"],genre)),content)
+        else:
+            mp.put(catalog["MapListedIn"],genre,lt.newList("SINGLE_LINKED"))
+            lt.addLast(me.getValue(mp.get(catalog["MapListedIn"],genre)),content)
+    return catalog
 # Funciones para creacion de datos
 
 # Funciones de consulta
