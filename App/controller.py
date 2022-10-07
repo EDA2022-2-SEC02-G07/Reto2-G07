@@ -31,6 +31,15 @@ El controlador se encarga de mediar entre la vista y el modelo.
 """
 
 # Inicialización del Catálogo de libros
+def newController(type,FC):
+    """
+    Crea una instancia del modelo
+    """
+    control = {
+        'model': model.newCatalog(type,FC)
+    }
+    tracemalloc.start()
+    return control
 def getTime():
     """
     devuelve el instante tiempo de procesamiento en milisegundos
@@ -67,12 +76,15 @@ def loadData(control,size):
     estructura de datos
     """
     catalog = control['model']
-    amazonPrimeContent = loadContentData(catalog,size,"amazon_prime")
-    disneyPlusContent = loadContentData(catalog,size,"disney_plus")
-    huluContent = loadContentData(catalog,size,"hulu")
-    netflixContent = loadContentData(catalog,size,"netflix")
-    
-    return amazonPrimeContent, disneyPlusContent, huluContent, netflixContent
+    time1 = getTime()
+    memory1 = getMemory()
+    loadContentData(catalog,size,"amazon_prime")
+    loadContentData(catalog,size,"disney_plus")
+    loadContentData(catalog,size,"hulu")
+    loadContentData(catalog,size,"netflix")
+    time2 = getTime()
+    memory2 = getMemory()
+    return deltaTime(time2,time1),deltaMemory(memory2,memory1)
 def loadContentData(catalog,size,platform):
     file = 'Streaming/'+platform+'_titles-utf8'+size+'.csv'
     contentfile = cf.data_dir + file
@@ -82,7 +94,7 @@ def loadContentData(catalog,size,platform):
         for key in content:
             if content[key] == "":
                 content[key] = "unknown"
-        model.add_content(catalog, content)
+        model.addContent(catalog, content)
     return catalog
 # Funciones para la carga de datos
 

@@ -42,7 +42,7 @@ def printMenu():
 catalog = None
 size = "-small"
 type = "CHAINING"
-FC = 0.4
+FC = 1
 """
 Menu principal
 """
@@ -52,9 +52,10 @@ while True:
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
         if catalog == None:
-            catalog = controller.newController()
-        controller.loadData(catalog,size)
-
+            catalog = controller.newController(type,FC)
+        time,memory = controller.loadData(catalog,size)
+        print("Tiempo de ejecución:",str(time),"ms.")
+        print("Memoria Usada:",str(memory),"kb.")
     elif int(inputs[0]) == 2:
         pass
 
