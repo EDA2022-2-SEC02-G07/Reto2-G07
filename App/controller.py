@@ -94,10 +94,14 @@ def loadContentData(catalog,size,platform):
         for key in content:
             if content[key] == "":
                 content[key] = "unknown"
-        model.addContent(catalog, content)
+        model.add_content(catalog, content)
     return catalog
 # Funciones para la carga de datos
 
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def ContentByActor(catalog,actor): #Requerimiento 3
+    return model.ContentByActor(catalog["model"],actor)
+def TopNGenres(catalog,N): #Requerimiento 7
+    return model.TopNGenres(catalog["model"],N)

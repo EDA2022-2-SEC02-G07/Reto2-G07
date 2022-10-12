@@ -24,6 +24,7 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from tabulate import tabulate
 assert cf
 
 
@@ -45,9 +46,54 @@ def printMenu():
     print("7- Encontrar el contenido con un director involucrado")
     print("8- Listar TOP (N) de los géneros con más contenido")
     print("9- Listar TOP (N) de actores más populares para un género específico")
-
+def printreq3(catalog,actor):
+    list,movies,shows = controller.ContentByActor(catalog,actor)
+    print_list = [["type","count"]]
+    if movies != 0:
+        print_list.append(["Movies",movies])
+    if shows != 0:
+        print_list.append(["TV Shows",shows])
+    print(tabulate(print_list,tablefmt="grid"))
+    print_list = [["release_year","title","duration","director","stream_service","type",
+    "cast","country","rating","listed_in","description"]]
+    if lt.size(list) < 6:
+        print("\nHay menos de 6 participaciones de",actor,"en el catálogo.")
+        for i in lt.iterator(list):
+            print_list.append([i["release_year"],i["title"],i["duration"],
+            i["director"],i["streaming_service"],i["type"],i["cast"],i["country"],
+            i["rating"],i["listed_in"],i["description"][0:100]])
+    else:
+        print("\nEstas son las primeras y últimas 3 participaciones de",actor+".")
+        first3 = lt.subList(list,1,3)
+        last3 = lt.subList(list,lt.size(list)-2,3)
+        for i in lt.iterator(first3):
+            print_list.append([i["release_year"],i["title"],i["duration"],
+            i["director"],i["streaming_service"],i["type"],i["cast"],i["country"],
+            i["rating"],i["listed_in"],i["description"][0:100]])
+        for i in lt.iterator(last3):
+            print_list.append([i["release_year"],i["title"],i["duration"],
+            i["director"],i["streaming_service"],i["type"],i["cast"],i["country"],
+            i["rating"],i["listed_in"],i["description"][0:100]])
+    print(tabulate(print_list,tablefmt="grid",maxcolwidths=20))
+def printreq7(catalog,N):
+    genreList = controller.TopNGenres(catalog,N)
+    rank = 1
+    print_list1 = [["listed_in","count"]]
+    print_list2 = [["rank","listed_in","count","type","stream_service"]]
+    for i in lt.iterator(genreList):
+        str1 = tabulate([["type","count"],["Movies",i["type"]["Movie"]],["TV Shows",i["type"]["TV Show"]]],tablefmt="plain")
+        str2_list = [["stream_service","count"]]
+        for key in i["stream"]:
+            if i["stream"][key] > 0:
+                str2_list.append([key,i["stream"][key]])
+        str2 = tabulate(str2_list,tablefmt="plain")
+        print_list1.append([i["genre"],i["size"]])
+        print_list2.append([rank,i["genre"],i["size"],str1,str2])
+        rank += 1
+    print(tabulate(print_list1,tablefmt="grid"))
+    print(tabulate(print_list2,tablefmt="grid"))
 catalog = None
-size = "-large"
+size = "-small"
 type = "PROBING"
 FC = 0.5
 print('Tipo:', type, 'Factor de carga:', FC)
@@ -66,7 +112,12 @@ while True:
         print("Memoria Usada:",str(memory),"kb.")
     elif int(inputs[0]) == 2:
         pass
-
+    elif int(inputs[0]) == 4:
+        actor = input("Ingrese el nombre del actor: ")
+        printreq3(catalog,actor)
+    elif int(inputs) == 8:
+        N = int(input("Ingrese el número N para el top: "))
+        printreq7(catalog,N)
     else:
         sys.exit(0)
 sys.exit(0)
