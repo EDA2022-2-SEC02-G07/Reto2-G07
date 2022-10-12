@@ -45,7 +45,11 @@ def newCatalog(type,FC):
                 "MapActor":mp.newMap(maptype=type,loadfactor=FC),
                 "MapListedIn":mp.newMap(maptype=type,loadfactor=FC),
                 "MapCountry":mp.newMap(maptype=type,loadfactor=FC),
-                "MapDirector":mp.newMap(maptype=type,loadfactor=FC)}
+                "MapDirector":mp.newMap(maptype=type,loadfactor=FC),
+                "amazon_prime":lt.newList("ARRAY_LIST"),
+                "disney_plus":lt.newList("ARRAY_LIST"),
+                "hulu":lt.newList("ARRAY_LIST"),
+                "netflix":lt.newList("ARRAY_LIST")}
     return catalog
 # Funciones para agregar informacion al catalogo
 def add_content(catalog,content):
@@ -92,6 +96,7 @@ def add_content(catalog,content):
         else:
             mp.put(catalog["MapDirector"],director,lt.newList("ARRAY_LIST"))
             lt.addLast(me.getValue(mp.get(catalog["MapDirector"],director)),content)
+        lt.addLast(catalog[content["streaming_service"]],content)
     return catalog
 # Funciones para creacion de datos
 def ContentByActor(catalog,actor): #Función Principal Requerimiento 3
