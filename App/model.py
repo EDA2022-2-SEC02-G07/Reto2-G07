@@ -120,7 +120,7 @@ def ContentByActor(catalog,actor): #Función Principal Requerimiento 3
             shows += 1
     merg.sort(ActorList,CMPContentByActor)
     return ActorList,movies,shows
-def TopNGenres(catalog,N):
+def TopNGenres(catalog,N): #Función Principal Requerimiento 7
     GenresMap = catalog["MapListedIn"]
     GenresList = mp.keySet(GenresMap)
     GenreSizeList = lt.newList("ARRAY_LIST")
@@ -148,7 +148,7 @@ def CMPContentByActor(title1,title2): #CMP Requerimiento 3
                 return True
     else:
         return False
-def CMPTopGenres(title1,title2):
+def CMPTopGenres(title1,title2): #CMP Requerimiento 7
     if title1["size"] > title2["size"]:
         return True
     else:
