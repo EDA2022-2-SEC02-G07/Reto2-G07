@@ -46,6 +46,27 @@ def printMenu():
     print("7- Encontrar el contenido con un director involucrado")
     print("8- Listar TOP (N) de los géneros con más contenido")
     print("9- Listar TOP (N) de actores más populares para un género específico")
+def printLoad(catalog):
+    print_list = [["service_name","count"],["amazon",lt.size(catalog["amazon_prime"])],
+    ["netflix",lt.size(catalog["netflix"])],["hulu",lt.size(catalog["hulu"])],["disney",lt.size(catalog["disney_plus"])]]
+    total = lt.size(catalog["disney_plus"])+lt.size(catalog["netflix"])+lt.size(catalog["hulu"])+lt.size(catalog["amazon_prime"])
+    print("Total de titulos cargados:",str(total)+".")
+    print(tabulate(print_list,tablefmt="grid"))
+    for i in ("amazon_prime","netflix","hulu","disney_plus"):
+        print("Primeros y últimos 3 titulos cargados de",i+".")
+        print_list = [["show_id","stream_service","type","release_year","title","director","cast",
+                        "country","date_added","rating","duration","listed_in","description"]]
+        first = lt.subList(catalog[i],1,3)
+        last = lt.subList(catalog[i],lt.size(catalog[i])-2,3)
+        for e in lt.iterator(first):
+            print_list.append([e["show_id"],e["streaming_service"],e["type"],e["release_year"],
+            e["title"],e["director"],e["cast"],e["country"],e["date_added"],e["rating"],e["duration"],
+            e["listed_in"],e["description"][0:100]])
+        for e in lt.iterator(last):
+            print_list.append([e["show_id"],e["streaming_service"],e["type"],e["release_year"],
+            e["title"],e["director"],e["cast"],e["country"],e["date_added"],e["rating"],e["duration"],
+            e["listed_in"],e["description"][0:100]])
+        print(tabulate(print_list,tablefmt="grid",maxcolwidths=17))
 def printreq3(catalog,actor):
     list,movies,shows = controller.ContentByActor(catalog,actor)
     print_list = [["type","count"]]
@@ -108,8 +129,9 @@ while True:
         if catalog == None:
             catalog = controller.newController(type,FC)
         time,memory = controller.loadData(catalog,size)
-        print("Tiempo de ejecución:",str(time),"ms.")
-        print("Memoria Usada:",str(memory),"kb.")
+        #print("Tiempo de ejecución:",str(time),"ms.")
+        #print("Memoria Usada:",str(memory),"kb.")
+        printLoad(catalog["model"])
     elif int(inputs[0]) == 2:
         pass
     elif int(inputs[0]) == 4:

@@ -96,7 +96,7 @@ def add_content(catalog,content):
         else:
             mp.put(catalog["MapDirector"],director,lt.newList("ARRAY_LIST"))
             lt.addLast(me.getValue(mp.get(catalog["MapDirector"],director)),content)
-        lt.addLast(catalog[content["streaming_service"]],content)
+    lt.addLast(catalog[content["streaming_service"]],content)
     return catalog
 # Funciones para creacion de datos
 def ContentByActor(catalog,actor): #Función Principal Requerimiento 3
