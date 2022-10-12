@@ -47,9 +47,10 @@ def printMenu():
     print("9- Listar TOP (N) de actores más populares para un género específico")
 
 catalog = None
-size = "-small"
-type = "CHAINING"
-FC = 1
+size = "-large"
+type = "PROBING"
+FC = 0.5
+print('Tipo:', type, 'Factor de carga:', FC)
 """
 Menu principal
 """

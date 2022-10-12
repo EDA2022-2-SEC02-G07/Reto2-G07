@@ -33,7 +33,9 @@ This repository is part of the data structure and algorithms (#EDA) teaching fra
 The students edit this section to add their names, Uniandes emails, and specify which project functionality of the project they will implement.
 
 req 5 - Guillermo Antonio Villalba Escamilla - 202114000 - g.villalba@uniandes.edu.co
-req 4 - Gabriel Francisco Gonzalez Estrada - 201912668 - gf.gonzalez@uniandes.edu.co
+
+req 4 - Gabriel Francisco González Estrada - 201912668 - gf.gonzalez@uniandes.edu.co
+
 req 3 - Nicolás Ruiz Pérez - 202123608 - n.ruizp2@uniandes.edu.co
 
 [Back to top](#challenge-template)
