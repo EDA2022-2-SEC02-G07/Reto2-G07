@@ -103,5 +103,7 @@ def loadContentData(catalog,size,platform):
 # Funciones de consulta sobre el catálogo
 def ContentByActor(catalog,actor): #Requerimiento 3
     return model.ContentByActor(catalog["model"],actor)
+def ContentByCountry(catalog,country): #Requerimiento 5
+    return model.ContentbyCountry(catalog["model"],country)
 def TopNGenres(catalog,N): #Requerimiento 7
     return model.TopNGenres(catalog["model"],N)

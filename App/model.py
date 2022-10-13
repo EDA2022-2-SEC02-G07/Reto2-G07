@@ -114,6 +114,22 @@ def ContentByActor(catalog,actor): #Función Principal Requerimiento 3
             shows += 1
     merg.sort(ActorList,CMPContentByActor)
     return ActorList,movies,shows
+def ContentbyCountry(catalog,country):
+    CountryMap = catalog["MapCountry"]
+    movies = 0
+    shows = 0
+    if mp.contains(CountryMap,country):
+        CountryList = me.getValue(mp.get(CountryMap,country))
+    else:
+        CountryList = lt.newList("ARRAY_LIST")
+    for i in lt.iterator(CountryList):
+        if i["type"] == "Movie":
+            movies += 1
+        else:
+            shows += 1
+    merg.sort(CountryList,CMPContentByCountry)
+    return CountryList,movies,shows
+
 def TopNGenres(catalog,N): #Función Principal Requerimiento 7
     GenresMap = catalog["MapListedIn"]
     GenresList = mp.keySet(GenresMap)
@@ -134,6 +150,17 @@ def TopNGenres(catalog,N): #Función Principal Requerimiento 7
 
 # Funciones de ordenamiento
 def CMPContentByActor(title1,title2): #CMP Requerimiento 3
+    if title1["release_year"] > title2["release_year"]:
+        return True
+    elif title1["release_year"] == title2["release_year"]:
+        if title1["title"] < title2["title"]:
+            return True
+        elif title1["title"] == title2["title"]:
+            if title1["duration"] < title2["duration"]:
+                return True
+    else:
+        return False
+def CMPContentByCountry(title1,title2): #CMP Requerimiento 5
     if title1["release_year"] > title2["release_year"]:
         return True
     elif title1["release_year"] == title2["release_year"]:
