@@ -101,12 +101,13 @@ def loadContentData(catalog,size,platform):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
-def MoviesInYear(catalog,year):
+def MoviesInYear(catalog,year): #Requerimiento 1
     return model.MoviesInYear(catalog["model"],year)
+def ShowsInDate(catalog,date):  #Requerimiento 2
+    return model.ShowsInDate(catalog["model"],date)
 def ContentByActor(catalog,actor): #Requerimiento 3
     return model.ContentByActor(catalog["model"],actor)
-def ContentByGenre(catalog,genre):
+def ContentByGenre(catalog,genre): #Requerimiento 4
     return model.contentByGenre(catalog['model'],genre)
-
 def TopNGenres(catalog,N): #Requerimiento 7
     return model.TopNGenres(catalog["model"],N)

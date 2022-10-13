@@ -93,7 +93,30 @@ def printreq1(catalog,year):
             printlist.append(append_list)
     print("Hay",str(lt.size(list)),"fechas en el año",year+".")
     print(tabulate(printlist,tablefmt="grid"))
-
+def printreq2(catalog,date):
+    list = controller.ShowsInDate(catalog,date)
+    printlist = [["type","date_added","release_year","title","duration","streaming_service","director","cast"]]
+    if lt.size(list) <= 6:
+        for i in lt.iterator(list):
+            append_list = []
+            for e in printlist[0]:
+                append_list.append(i[e])
+            printlist.append(append_list)
+    else:
+        first = lt.subList(list,1,3)
+        last = lt.subList(list,lt.size(list)-2,3)
+        for i in lt.iterator(first):
+            append_list = []
+            for e in printlist[0]:
+                append_list.append(i[e])
+            printlist.append(append_list)
+        for i in lt.iterator(last):
+            append_list = []
+            for e in printlist[0]:
+                append_list.append(i[e])
+            printlist.append(append_list)
+    print("Hay",str(lt.size(list)),"shows en la fecha",date+".")
+    print(tabulate(printlist,tablefmt="grid"))
 def printreq3(catalog,actor):
     list,movies,shows = controller.ContentByActor(catalog,actor)
     print_list = [["type","count"]]
@@ -195,6 +218,9 @@ while True:
     elif int(inputs[0]) == 2:
         year = input("Ingrese el año: ")
         printreq1(catalog,year)
+    elif int(inputs[0]) == 3:
+        date = input("Ingrese la fecha: ")
+        printreq2(catalog,date)
     elif int(inputs[0]) == 4:
         actor = input("Ingrese el nombre del actor: ")
         printreq3(catalog,actor)

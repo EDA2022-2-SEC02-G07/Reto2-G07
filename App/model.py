@@ -63,7 +63,8 @@ def add_content(catalog,content):
                 lt.addLast(me.getValue(mp.get(catalog["MapReleaseYear"],content["release_year"])),content)
     elif content["type"] == "TV Show":
         if content["date_added"] != "unknown":
-            year = content["date_added"].split(",")[1].strip()
+            year = date_parser(content["date_added"])
+            content["date_added"] = year
             if (mp.contains(catalog["MapDateAdded"],year) == True):
                 lt.addLast(me.getValue(mp.get(catalog["MapDateAdded"],year)),content)
             else:
@@ -99,13 +100,30 @@ def add_content(catalog,content):
             lt.addLast(me.getValue(mp.get(catalog["MapDirector"],director)),content)
     lt.addLast(catalog[content["streaming_service"]],content)
     return catalog
+def date_parser(date): #Función para procesar fechas en formato "%B %d, %Y"
+    result = time.strptime(date, "%B %d, %Y")
+    year = str(result.tm_year)
+    month = str(result.tm_mon) 
+    if len(month) == 1:
+        month = "0"+month
+    day = str(result.tm_mday)
+    if len(day) == 1:
+        day = "0"+day
+    return year + "-" + month + "-" + day
 # Funciones para creacion de datos
-def MoviesInYear(catalog,year):
+def MoviesInYear(catalog,year): #Función Principal Requerimiento 1
     yearMap = catalog["MapReleaseYear"]
     yearlist = me.getValue(mp.get(yearMap,year))
     merg.sort(yearlist,CMPMoviesInYear)
     return yearlist
 
+def ShowsInDate(catalog,date): #Función Principal Requerimiento 2
+    if mp.contains(catalog["MapDateAdded"],date) == True:
+        DateList = me.getValue(mp.get(catalog["MapDateAdded"],date))
+        merg.sort(DateList,CMPShowsInDate)
+    else:
+        DateList = lt.newList("ARRAY_LIST")
+    return DateList
 def ContentByActor(catalog,actor): #Función Principal Requerimiento 3
     ActorMap = catalog["MapActor"]
     movies = 0
@@ -157,7 +175,7 @@ def TopNGenres(catalog,N): #Función Principal Requerimiento 7
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
-def CMPMoviesInYear(title1,title2):
+def CMPMoviesInYear(title1,title2): #CMP Requerimiento 1
     if title1["title"] < title2["title"]:
         return True
     elif title1["title"] == title2["title"]:
@@ -165,7 +183,14 @@ def CMPMoviesInYear(title1,title2):
             return True
     else:
         return False
-
+def CMPShowsInDate(title1,title2): #CMP Requerimiento 2
+    if title1["title"] < title2["title"]:
+        return True
+    elif title1["title"] == title2["title"]:
+        if title1["duration"] < title2["duration"]:
+            return True
+    else:
+        return False
 def CMPContentByActor(title1,title2): #CMP Requerimiento 3
     if title1["release_year"] > title2["release_year"]:
         return True
