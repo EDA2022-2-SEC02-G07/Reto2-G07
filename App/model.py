@@ -105,6 +105,7 @@ def MoviesInYear(catalog,year):
     yearlist = me.getValue(mp.get(yearMap,year))
     merg.sort(yearlist,CMPMoviesInYear)
     return yearlist
+
 def ContentByActor(catalog,actor): #Función Principal Requerimiento 3
     ActorMap = catalog["MapActor"]
     movies = 0
@@ -120,6 +121,23 @@ def ContentByActor(catalog,actor): #Función Principal Requerimiento 3
             shows += 1
     merg.sort(ActorList,CMPContentByActor)
     return ActorList,movies,shows
+
+def contentByGenre(catalog, genre):
+    GenreMap = catalog['MapListedIn']
+    movies = 0
+    shows = 0
+    if mp.contains(GenreMap, genre) == True:
+        GenreList = me.getValue(mp.get(GenreMap,genre))
+    else:
+        GenreList = lt.newList('ARRAY_LIST')
+    for video in lt.iterator(GenreList):
+        if video['type'] == 'Movie':
+            movies+=1
+        else:
+            shows+=1
+    merg.sort(GenreList, CMPContentByActor)
+    return GenreList, movies, shows
+
 def TopNGenres(catalog,N): #Función Principal Requerimiento 7
     GenresMap = catalog["MapListedIn"]
     GenresList = mp.keySet(GenresMap)
@@ -147,6 +165,7 @@ def CMPMoviesInYear(title1,title2):
             return True
     else:
         return False
+
 def CMPContentByActor(title1,title2): #CMP Requerimiento 3
     if title1["release_year"] > title2["release_year"]:
         return True
@@ -158,6 +177,8 @@ def CMPContentByActor(title1,title2): #CMP Requerimiento 3
                 return True
     else:
         return False
+
+
 def CMPTopGenres(title1,title2): #CMP Requerimiento 7
     if title1["size"] > title2["size"]:
         return True

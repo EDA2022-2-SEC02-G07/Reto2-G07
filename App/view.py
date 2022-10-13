@@ -42,10 +42,11 @@ def printMenu():
     print("3- Examinar programas de televisión agregados en un año")
     print("4- Encontrar contenido donde participa un actor")
     print("5- Encontrar contenido por un genero particular")
-    print("6-Encontrar contenido producido en un país")
+    print("6- Encontrar contenido producido en un país")
     print("7- Encontrar el contenido con un director involucrado")
     print("8- Listar TOP (N) de los géneros con más contenido")
     print("9- Listar TOP (N) de actores más populares para un género específico")
+
 def printLoad(catalog):
     print_list = [["service_name","count"],["amazon",lt.size(catalog["amazon_prime"])],
     ["netflix",lt.size(catalog["netflix"])],["hulu",lt.size(catalog["hulu"])],["disney",lt.size(catalog["disney_plus"])]]
@@ -67,6 +68,7 @@ def printLoad(catalog):
             e["title"],e["director"],e["cast"],e["country"],e["date_added"],e["rating"],e["duration"],
             e["listed_in"],e["description"][0:100]])
         print(tabulate(print_list,tablefmt="grid",maxcolwidths=17))
+
 def printreq1(catalog,year):
     list = controller.MoviesInYear(catalog,year)
     printlist = [["type","release_year","title","duration","streaming_service","director","cast"]]
@@ -91,6 +93,7 @@ def printreq1(catalog,year):
             printlist.append(append_list)
     print("Hay",str(lt.size(list)),"fechas en el año",year+".")
     print(tabulate(printlist,tablefmt="grid"))
+
 def printreq3(catalog,actor):
     list,movies,shows = controller.ContentByActor(catalog,actor)
     print_list = [["type","count"]]
@@ -120,6 +123,38 @@ def printreq3(catalog,actor):
             i["director"],i["streaming_service"],i["type"],i["cast"],i["country"],
             i["rating"],i["listed_in"],i["description"][0:100]])
     print(tabulate(print_list,tablefmt="grid",maxcolwidths=20))
+
+def printreq4(catalog, genre):
+    list, movies, shows = controller.ContentByGenre(catalog, genre)
+    print_list = [["type","count"]]
+    if movies != 0:
+        print_list.append(["Movies",movies])
+    if shows != 0:
+        print_list.append(["TV Shows",shows])
+    print(tabulate(print_list,tablefmt="grid"))
+    print_list = [["release_year","title","duration","stream_service","director","type",
+    "cast","country","rating","listed_in","description"]]
+    if lt.size(list) < 6:
+        print("\nHay menos de 6 videos del género ",genre,"en el catálogo.")
+        for i in lt.iterator(list):
+            print_list.append([i["release_year"],i["title"],i["duration"],
+            i["streaming_service"],i["director"],i["type"],i["cast"],i["country"],
+            i["rating"],i["listed_in"],i["description"][0:100]])
+    else:
+        print("\nEstas son los primeros y últimos 3 videos del género",genre+".")
+        first3 = lt.subList(list,1,3)
+        last3 = lt.subList(list,lt.size(list)-2,3)
+        for i in lt.iterator(first3):
+            print_list.append([i["release_year"],i["title"],i["duration"],
+            i["streaming_service"],i["director"],i["type"],i["cast"],i["country"],
+            i["rating"],i["listed_in"],i["description"][0:100]])
+        for i in lt.iterator(last3):
+            print_list.append([i["release_year"],i["title"],i["duration"],
+            i["streaming_service"],i["director"],i["type"],i["cast"],i["country"],
+            i["rating"],i["listed_in"],i["description"][0:100]])
+    print(tabulate(print_list,tablefmt="grid",maxcolwidths=20))
+
+
 def printreq7(catalog,N):
     genreList = controller.TopNGenres(catalog,N)
     rank = 1
@@ -137,6 +172,7 @@ def printreq7(catalog,N):
         rank += 1
     print(tabulate(print_list1,tablefmt="grid"))
     print(tabulate(print_list2,tablefmt="grid"))
+
 catalog = None
 size = "-small"
 type = "PROBING"
@@ -162,6 +198,9 @@ while True:
     elif int(inputs[0]) == 4:
         actor = input("Ingrese el nombre del actor: ")
         printreq3(catalog,actor)
+    elif int(inputs[0]) == 5:
+        genre = input('Ingrese el género que desea consultar:')
+        printreq4(catalog,genre)
     elif int(inputs) == 8:
         N = int(input("Ingrese el número N para el top: "))
         printreq7(catalog,N)

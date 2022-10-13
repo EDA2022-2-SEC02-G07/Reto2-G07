@@ -105,5 +105,8 @@ def MoviesInYear(catalog,year):
     return model.MoviesInYear(catalog["model"],year)
 def ContentByActor(catalog,actor): #Requerimiento 3
     return model.ContentByActor(catalog["model"],actor)
+def ContentByGenre(catalog,genre):
+    return model.contentByGenre(catalog['model'],genre)
+
 def TopNGenres(catalog,N): #Requerimiento 7
     return model.TopNGenres(catalog["model"],N)
