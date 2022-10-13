@@ -114,7 +114,7 @@ def ContentByActor(catalog,actor): #Función Principal Requerimiento 3
             shows += 1
     merg.sort(ActorList,CMPContentByActor)
     return ActorList,movies,shows
-def ContentbyCountry(catalog,country):
+def ContentbyCountry(catalog,country): #Función Principal Requerimiento 5
     CountryMap = catalog["MapCountry"]
     movies = 0
     shows = 0
@@ -129,7 +129,22 @@ def ContentbyCountry(catalog,country):
             shows += 1
     merg.sort(CountryList,CMPContentByCountry)
     return CountryList,movies,shows
-
+def ContentByDirector(catalog,director): #Función Principal Requerimiento 6
+    DirectorMap = catalog["MapDirector"]
+    movies = 0
+    shows = 0
+    if mp.contains(DirectorMap,director):
+        DirectorList = me.getValue(mp.get(DirectorMap,director))
+    else:
+        DirectorList = lt.newList("ARRAY_LIST")
+    for i in lt.iterator(DirectorList):
+        if i["type"] == "Movie":
+            movies += 1
+        else:
+            shows += 1
+        if i['']
+    merg.sort(DirectorList,CMPContentByCountry)
+    return DirectorList,movies,shows
 def TopNGenres(catalog,N): #Función Principal Requerimiento 7
     GenresMap = catalog["MapListedIn"]
     GenresList = mp.keySet(GenresMap)
