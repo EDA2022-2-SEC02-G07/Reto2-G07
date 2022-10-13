@@ -140,7 +140,7 @@ def ContentByActor(catalog,actor): #Función Principal Requerimiento 3
     merg.sort(ActorList,CMPContentByActor)
     return ActorList,movies,shows
 
-def contentByGenre(catalog, genre):
+def contentByGenre(catalog, genre): #Función Principal Requerimiento 4
     GenreMap = catalog['MapListedIn']
     movies = 0
     shows = 0
@@ -155,7 +155,26 @@ def contentByGenre(catalog, genre):
             shows+=1
     merg.sort(GenreList, CMPContentByActor)
     return GenreList, movies, shows
-
+def TitlesByDirector(catalog,director): #Función Principal Requerimiento 6
+    type = {"Movie":0,"TV Show":0}
+    service_name = {"amazon_prime":{"Movie":0,"TV Show":0},"disney_plus":{"Movie":0,"TV Show":0},
+        "hulu":{"Movie":0,"TV Show":0},"netflix":{"Movie":0,"TV Show":0}}
+    listed_in = {}
+    if mp.contains(catalog["MapDirector"],director) == True:
+        DirectorList = me.getValue(mp.get(catalog["MapDirector"],director))
+        for i in lt.iterator(DirectorList):
+            type[i["type"]] += 1
+            service_name[i["streaming_service"]][i["type"]] += 1
+            for e in i["listed_in"].split(","):
+                e = e.strip()
+                if e not in listed_in:
+                    listed_in[e] = 1
+                else:
+                    listed_in[e] += 1
+        merg.sort(DirectorList,CMPTitlesByDirector)
+        return DirectorList,type,service_name,listed_in
+    else:
+        return lt.newList("ARRAY_LIST"),type,service_name,listed_in
 def TopNGenres(catalog,N): #Función Principal Requerimiento 7
     GenresMap = catalog["MapListedIn"]
     GenresList = mp.keySet(GenresMap)
@@ -202,7 +221,17 @@ def CMPContentByActor(title1,title2): #CMP Requerimiento 3
                 return True
     else:
         return False
-
+def CMPTitlesByDirector(title1,title2): #CMP Requerimiento 6
+    if title1["release_year"] < title2["release_year"]:
+        return True
+    elif title1["release_year"] == title2["release_year"]:
+        if title1["title"] < title2["title"]:
+            return True
+        elif title1["title"] == title2["title"]:
+            if title1["duration"] < title2["duration"]:
+                return True
+    else:
+        return False
 
 def CMPTopGenres(title1,title2): #CMP Requerimiento 7
     if title1["size"] > title2["size"]:

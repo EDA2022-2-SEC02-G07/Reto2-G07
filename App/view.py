@@ -176,8 +176,31 @@ def printreq4(catalog, genre):
             i["streaming_service"],i["director"],i["type"],i["cast"],i["country"],
             i["rating"],i["listed_in"],i["description"][0:100]])
     print(tabulate(print_list,tablefmt="grid",maxcolwidths=20))
-
-
+def printreq6(catalog,director):
+    DirectorList,type,service_name,listed_in = controller.TitlesByDirector(catalog,director)
+    printlist1 = [["type","count"]]
+    printlist2 = [["service_name","Movie","TV Show"]]
+    printlist3 = [["listed_in","count"]]
+    printlist4 = [["release_year","title","duration","director","streaming_service","type",
+                    "cast","country","rating","listed_in","description"]]
+    for i in ("Movie","TV Show"):
+        printlist1.append([i,type[i]])
+    for i in service_name:
+        printlist2.append([i,service_name[i]["Movie"],service_name[i]["TV Show"]])
+    for i in listed_in:
+        printlist3.append([i,listed_in[i]])
+    for i in lt.iterator(DirectorList):
+        list_ = []
+        for e in printlist4[0]:
+            if e != "description":
+                list_.append(i[e])
+            else:
+                list_.append(i[e][0:100])
+        printlist4.append(list_)
+    print(tabulate(printlist1,tablefmt="grid"))
+    print(tabulate(printlist2,tablefmt="grid"))
+    print(tabulate(printlist3,tablefmt="grid"))
+    print(tabulate(printlist4,tablefmt="grid",maxcolwidths=17))
 def printreq7(catalog,N):
     genreList = controller.TopNGenres(catalog,N)
     rank = 1
@@ -227,6 +250,9 @@ while True:
     elif int(inputs[0]) == 5:
         genre = input('Ingrese el género que desea consultar:')
         printreq4(catalog,genre)
+    elif int(inputs) == 7:
+        director = input("Ingrese el nombre del director: ")
+        printreq6(catalog,director)
     elif int(inputs) == 8:
         N = int(input("Ingrese el número N para el top: "))
         printreq7(catalog,N)
