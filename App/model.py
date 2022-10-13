@@ -31,6 +31,7 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 from DISClib.Algorithms.Sorting import mergesort as merg
+import time
 assert cf
 
 """
@@ -99,6 +100,11 @@ def add_content(catalog,content):
     lt.addLast(catalog[content["streaming_service"]],content)
     return catalog
 # Funciones para creacion de datos
+def MoviesInYear(catalog,year):
+    yearMap = catalog["MapReleaseYear"]
+    yearlist = me.getValue(mp.get(yearMap,year))
+    merg.sort(yearlist,CMPMoviesInYear)
+    return yearlist
 def ContentByActor(catalog,actor): #Función Principal Requerimiento 3
     ActorMap = catalog["MapActor"]
     movies = 0
@@ -133,6 +139,14 @@ def TopNGenres(catalog,N): #Función Principal Requerimiento 7
 # Funciones utilizadas para comparar elementos dentro de una lista
 
 # Funciones de ordenamiento
+def CMPMoviesInYear(title1,title2):
+    if title1["title"] < title2["title"]:
+        return True
+    elif title1["title"] == title2["title"]:
+        if title1["duration"] < title2["duration"]:
+            return True
+    else:
+        return False
 def CMPContentByActor(title1,title2): #CMP Requerimiento 3
     if title1["release_year"] > title2["release_year"]:
         return True

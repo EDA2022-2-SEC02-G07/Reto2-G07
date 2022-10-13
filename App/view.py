@@ -67,6 +67,30 @@ def printLoad(catalog):
             e["title"],e["director"],e["cast"],e["country"],e["date_added"],e["rating"],e["duration"],
             e["listed_in"],e["description"][0:100]])
         print(tabulate(print_list,tablefmt="grid",maxcolwidths=17))
+def printreq1(catalog,year):
+    list = controller.MoviesInYear(catalog,year)
+    printlist = [["type","release_year","title","duration","streaming_service","director","cast"]]
+    if lt.size(list) <= 6:
+        for i in lt.iterator(list):
+            append_list = []
+            for e in printlist[0]:
+                append_list.append(i[e])
+            printlist.append(append_list)
+    else:
+        first = lt.subList(list,1,3)
+        last = lt.subList(list,lt.size(list)-2,3)
+        for i in lt.iterator(first):
+            append_list = []
+            for e in printlist[0]:
+                append_list.append(i[e])
+            printlist.append(append_list)
+        for i in lt.iterator(last):
+            append_list = []
+            for e in printlist[0]:
+                append_list.append(i[e])
+            printlist.append(append_list)
+    print("Hay",str(lt.size(list)),"fechas en el año",year+".")
+    print(tabulate(printlist,tablefmt="grid"))
 def printreq3(catalog,actor):
     list,movies,shows = controller.ContentByActor(catalog,actor)
     print_list = [["type","count"]]
@@ -133,7 +157,8 @@ while True:
         #print("Memoria Usada:",str(memory),"kb.")
         printLoad(catalog["model"])
     elif int(inputs[0]) == 2:
-        pass
+        year = input("Ingrese el año: ")
+        printreq1(catalog,year)
     elif int(inputs[0]) == 4:
         actor = input("Ingrese el nombre del actor: ")
         printreq3(catalog,actor)

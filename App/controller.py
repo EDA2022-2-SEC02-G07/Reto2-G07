@@ -101,6 +101,8 @@ def loadContentData(catalog,size,platform):
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+def MoviesInYear(catalog,year):
+    return model.MoviesInYear(catalog["model"],year)
 def ContentByActor(catalog,actor): #Requerimiento 3
     return model.ContentByActor(catalog["model"],actor)
 def TopNGenres(catalog,N): #Requerimiento 7
