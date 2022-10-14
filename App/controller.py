@@ -109,7 +109,11 @@ def ContentByActor(catalog,actor): #Requerimiento 3
     return model.ContentByActor(catalog["model"],actor)
 def ContentByGenre(catalog,genre): #Requerimiento 4
     return model.contentByGenre(catalog['model'],genre)
+def ContentByCountry(catalog,country): #Requerimiento 5
+    return model.ContentbyCountry(catalog["model"],country)
 def TitlesByDirector(catalog,director): #Requerimiento 6
     return model.TitlesByDirector(catalog["model"],director)
 def TopNGenres(catalog,N): #Requerimiento 7
     return model.TopNGenres(catalog["model"],N)
+def TopNActorByGenre(catalog, genre, N): #Requerimiento 8
+    return model.TopNActorsByGenre(catalog["model"], genre, N)

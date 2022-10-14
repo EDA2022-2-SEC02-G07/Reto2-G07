@@ -157,7 +157,7 @@ def printreq4(catalog, genre):
     print(tabulate(print_list,tablefmt="grid"))
     print_list = [["release_year","title","duration","stream_service","director","type",
     "cast","country","rating","listed_in","description"]]
-    if lt.size(list) < 6:
+    if lt.size(list) <= 6:
         print("\nHay menos de 6 videos del género ",genre,"en el catálogo.")
         for i in lt.iterator(list):
             print_list.append([i["release_year"],i["title"],i["duration"],
@@ -174,6 +174,35 @@ def printreq4(catalog, genre):
         for i in lt.iterator(last3):
             print_list.append([i["release_year"],i["title"],i["duration"],
             i["streaming_service"],i["director"],i["type"],i["cast"],i["country"],
+            i["rating"],i["listed_in"],i["description"][0:100]])
+    print(tabulate(print_list,tablefmt="grid",maxcolwidths=20))
+def printreq5(catalog,country):
+    list,movies,shows = controller.ContentByCountry(catalog,country)
+    print_list = [['type','count']]
+    if movies != 0:
+        print_list.append(["Movies",movies])
+    if shows != 0:
+        print_list.append(["TV Shows",shows])
+    print(tabulate(print_list,tablefmt="grid"))
+    print_list = [["release_year","title","duration","director","stream_service","type",
+    "cast","country","rating","listed_in","description"]]
+    if lt.size(list) < 6:
+        print("\nHay menos de 6 participaciones de",country,"en el catálogo.")
+        for i in lt.iterator(list):
+            print_list.append([i["release_year"],i["title"],i["duration"],
+            i["director"],i["streaming_service"],i["type"],i["cast"],i["country"],
+            i["rating"],i["listed_in"],i["description"][0:100]])
+    else:
+        print("\nEstos son los primeros y últimos 3 contenidos producidos en",country+":")
+        first3 = lt.subList(list,1,3)
+        last3 = lt.subList(list,lt.size(list)-2,3)
+        for i in lt.iterator(first3):
+            print_list.append([i["release_year"],i["title"],i["duration"],
+            i["director"],i["streaming_service"],i["type"],i["cast"],i["country"],
+            i["rating"],i["listed_in"],i["description"][0:100]])
+        for i in lt.iterator(last3):
+            print_list.append([i["release_year"],i["title"],i["duration"],
+            i["director"],i["streaming_service"],i["type"],i["cast"],i["country"],
             i["rating"],i["listed_in"],i["description"][0:100]])
     print(tabulate(print_list,tablefmt="grid",maxcolwidths=20))
 def printreq6(catalog,director):
@@ -219,6 +248,79 @@ def printreq7(catalog,N):
     print(tabulate(print_list1,tablefmt="grid"))
     print(tabulate(print_list2,tablefmt="grid"))
 
+def printreq8(catalog,genre,N):
+    Info_list = controller.TopNActorByGenre(catalog,genre,N)
+    printlist1 = [["Name","Movies","TV Shows","streaming_platform"]]
+    printlist2 = [["Name","Cast","Directors"]]
+    printlist3 = [['Name', 'Movies', 'TV Shows']]
+    for i in lt.iterator(Info_list):
+        name,service_name, type, directorList, castList = i
+        service_list = [["Service","count"]]
+        for key in service_name:
+            service1_list = [["type","count"]]
+            for key1 in service_name[key]:
+                service1_list.append([key1,service_name[key][key1]])
+            table1 = tabulate(service1_list,tablefmt="plain")
+            service_list.append([key,table1])
+        table2 = tabulate(service_list,tablefmt="plain")
+        printlist1.append([name,lt.size(type["Movie"]),lt.size(type["TV Show"]),table2])
+        CastString = ""
+        if lt.size(castList) < 6:
+            for cast in lt.iterator(castList):
+                CastString += cast + ", "
+        else:
+            first_cast = lt.subList(castList,1,3)
+            last_cast = lt.subList(castList,lt.size(castList)-2,3) 
+            for cast in lt.iterator(first_cast):
+                CastString += cast + ", "
+            for cast in lt.iterator(last_cast):
+                CastString += cast + ", "
+        DirectorString = ""
+        if lt.size(directorList) < 6:
+            for director in lt.iterator(directorList):
+                DirectorString += director + ", "
+        else:
+            first_director = lt.subList(directorList,1,3)
+            last_director = lt.subList(directorList,lt.size(directorList)-2,3) 
+            for director in lt.iterator(first_director):
+                DirectorString += director + ", "
+            for director in lt.iterator(last_director):
+                DirectorString += director + ", "
+        printlist2.append([name,CastString,DirectorString])
+        if lt.size(type['Movie']) <= 6:
+            movie_list = [["release_year","title","director"]]
+            for title in lt.iterator(type["Movie"]):
+                movie_list.append([title["release_year"],title["title"],title["director"]])
+            movie_table = tabulate(movie_list,tablefmt="plain")
+        else:
+            first_movies = lt.subList(type['Movie'], 1, 3)
+            last_movies = lt.subList(type['Movie'], lt.size(type['Movie']) - 2, 3)        
+            for title in lt.iterator(first_movies):
+                movie_list.append([title["release_year"],title["title"],title["director"]])
+            for title in lt.iterator(last_movies):
+                movie_list.append([title["release_year"],title["title"],title["director"]])
+            movie_table = tabulate(movie_list,tablefmt="plain")
+        if lt.size(type['TV Show']) <= 6:
+            shows_list = [["release_year","title","director"]]
+            for title in lt.iterator(type["TV Show"]):
+                shows_list.append([title["release_year"],title["title"],title["director"]])
+            show_table = tabulate(shows_list,tablefmt="plain")
+        else:
+            shows_list = [["release_year","title","director"]]
+            first_shows = lt.subList(type['TV Show'], 1, 3)
+            last_shows = lt.subList(type['TV Show'], lt.size(type['TV Show']) - 2, 3)        
+            for title in lt.iterator(first_shows):
+                shows_list.append([title["release_year"],title["title"],title["director"]])
+            for title in lt.iterator(last_shows):
+                shows_list.append([title["release_year"],title["title"],title["director"]])
+            show_table = tabulate(shows_list,tablefmt="plain")
+        printlist3.append([name,movie_table,show_table])
+    print('Actor, Movies, TV Shows, Streaming')
+    print(tabulate(printlist1, tablefmt='grid'))
+    print('Actor, Cast, Directors')
+    print(tabulate(printlist2,tablefmt="grid"))
+    print('Actor, Movies, TV Shows')
+    print(tabulate(printlist3,tablefmt="grid"))
 catalog = None
 size = "-small"
 type = "PROBING"
@@ -250,12 +352,19 @@ while True:
     elif int(inputs[0]) == 5:
         genre = input('Ingrese el género que desea consultar:')
         printreq4(catalog,genre)
+    elif int(inputs[0]) == 6:
+        country = input("Ingrese el nombre del pais a consultar: ")
+        printreq5(catalog,country)
     elif int(inputs) == 7:
         director = input("Ingrese el nombre del director: ")
         printreq6(catalog,director)
     elif int(inputs) == 8:
         N = int(input("Ingrese el número N para el top: "))
         printreq7(catalog,N)
+    elif int(inputs) == 9:
+        genre = input('Ingrese el género que desea consultar: ')
+        N = int(input('Ingrese el número N: '))
+        printreq8(catalog, genre, N)
     else:
         sys.exit(0)
 sys.exit(0)

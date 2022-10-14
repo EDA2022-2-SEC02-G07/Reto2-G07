@@ -77,6 +77,7 @@ def add_content(catalog,content):
         else:
             mp.put(catalog["MapActor"],actor,lt.newList("SINGLE_LINKED"))
             lt.addLast(me.getValue(mp.get(catalog["MapActor"],actor)),content)
+    content["listed_in"] = content["listed_in"].replace("&",',')
     for genre in content["listed_in"].split(","):
         genre = genre.strip()
         if mp.contains(catalog["MapListedIn"],genre) == True:
@@ -155,6 +156,22 @@ def contentByGenre(catalog, genre): #Función Principal Requerimiento 4
             shows+=1
     merg.sort(GenreList, CMPContentByActor)
     return GenreList, movies, shows
+    
+def ContentbyCountry(catalog,country): #Función Principal Requerimiento 5
+    CountryMap = catalog["MapCountry"]
+    movies = 0
+    shows = 0
+    if mp.contains(CountryMap,country):
+        CountryList = me.getValue(mp.get(CountryMap,country))
+    else:
+        CountryList = lt.newList("ARRAY_LIST")
+    for i in lt.iterator(CountryList):
+        if i["type"] == "Movie":
+            movies += 1
+        else:
+            shows += 1
+    merg.sort(CountryList,CMPContentByCountry)
+    return CountryList,movies,shows
 def TitlesByDirector(catalog,director): #Función Principal Requerimiento 6
     type = {"Movie":0,"TV Show":0}
     service_name = {"amazon_prime":{"Movie":0,"TV Show":0},"disney_plus":{"Movie":0,"TV Show":0},
@@ -189,6 +206,69 @@ def TopNGenres(catalog,N): #Función Principal Requerimiento 7
         lt.addLast(GenreSizeList,{"genre":genre,"size":lt.size(title),"type":type_dict,"stream":stream_dict})
     merg.sort(GenreSizeList,CMPTopGenres)
     return lt.subList(GenreSizeList,1,N)
+
+def TopNActorsByGenre(catalog, genre, N):
+    dictActores = {}
+    GenreMap = catalog["MapListedIn"]
+    Titles = me.getValue(mp.get(GenreMap,genre))
+    ActorsMap = mp.newMap(maptype='PROBING', loadfactor=0.5)
+    ActorList = lt.newList("ARRAY_LIST")
+    for video in lt.iterator(Titles):
+        for actor in video["cast"].split(","):
+            actor = actor.strip()
+            if actor not in dictActores:
+                dictActores[actor] = lt.newList("ARRAY_LIST")  
+            lt.addLast(dictActores[actor],video)
+    count = 0
+    while count < N:
+        max_ = None
+        name = None
+        for key in dictActores:
+            if max_ == None:
+                name = key
+                max_ = dictActores[key]
+            elif lt.size(dictActores[key]) > lt.size(max_):
+                name = key
+                max_ = dictActores[key]
+            elif lt.size(dictActores[key]) == lt.size(max_):
+                if key < name:
+                    name = key
+                    max_ = dictActores[key]
+        lt.addLast(ActorList,{"name":name,"titles":max_})
+        dictActores.pop(name)
+        count += 1
+    Info_list = lt.newList("ARRAY_LIST")
+    for i in lt.iterator(ActorList):
+        lt.addLast(Info_list,infoActor(i))
+    return Info_list
+def infoActor(ActorMap):
+    service_name = {"amazon_prime":{"Movie":0,"TV Show":0},"disney_plus":{"Movie":0,"TV Show":0},
+        "hulu":{"Movie":0,"TV Show":0},"netflix":{"Movie":0,"TV Show":0}}
+    type = {"Movie":lt.newList("ARRAY_LIST"),"TV Show":lt.newList('ARRAY_LIST')}
+    directorList = lt.newList("ARRAY_LIST")
+    castList = lt.newList("ARRAY_LIST")
+    name = ActorMap["name"]
+    titles = ActorMap["titles"]
+    for i in lt.iterator(titles):
+        lt.addLast(type[i["type"]],i)
+        service_name[i["streaming_service"]][i["type"]] += 1
+        for director in i["director"].split(","):
+            director = director.strip()
+            if (lt.isPresent(directorList,director) == 0) and (director != "unknown"):
+                lt.addLast(directorList,director)
+        for actor in i["cast"].split(","):
+            actor = actor.strip()
+            if (lt.isPresent(castList,actor) == 0) and (actor != name):
+                lt.addLast(castList,actor)
+    merg.sort(type['Movie'],CMPShowsAndSeries)
+    merg.sort(type['TV Show'],CMPShowsAndSeries)
+    merg.sort(directorList, CMPByAlphabet)
+    merg.sort(castList, CMPByAlphabet)
+    tuple = (name,service_name, type, directorList, castList)
+    return tuple
+        
+
+
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -221,6 +301,17 @@ def CMPContentByActor(title1,title2): #CMP Requerimiento 3
                 return True
     else:
         return False
+def CMPContentByCountry(title1,title2): #CMP Requerimiento 5
+    if title1["release_year"] > title2["release_year"]:
+        return True
+    elif title1["release_year"] == title2["release_year"]:
+        if title1["title"] < title2["title"]:
+            return True
+        elif title1["title"] == title2["title"]:
+            if title1["duration"] < title2["duration"]:
+                return True
+    else:
+        return False
 def CMPTitlesByDirector(title1,title2): #CMP Requerimiento 6
     if title1["release_year"] < title2["release_year"]:
         return True
@@ -236,5 +327,22 @@ def CMPTitlesByDirector(title1,title2): #CMP Requerimiento 6
 def CMPTopGenres(title1,title2): #CMP Requerimiento 7
     if title1["size"] > title2["size"]:
         return True
+    else:
+        return False
+
+def CMPByAlphabet(title1,title2):
+    if title1 < title2:
+        return True
+    else:
+        return False
+def CMPShowsAndSeries(title1,title2):
+    if title1["release_year"] < title2["release_year"]:
+        return True
+    elif title1["release_year"] == title2["release_year"]:
+        if title1["title"] < title2["title"]:
+            return True
+        elif title1["title"] == title2["title"]:
+            if title1["duration"] < title2["duration"]:
+                return True
     else:
         return False
