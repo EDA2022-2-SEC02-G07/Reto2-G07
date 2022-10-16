@@ -322,7 +322,7 @@ def printreq8(catalog,genre,N):
     print('Actor, Movies, TV Shows')
     print(tabulate(printlist3,tablefmt="grid"))
 catalog = None
-size = "-small"
+size = "-large"
 type = "PROBING"
 FC = 0.5
 print('Tipo:', type, 'Factor de carga:', FC)

@@ -207,7 +207,7 @@ def TopNGenres(catalog,N): #Función Principal Requerimiento 7
     merg.sort(GenreSizeList,CMPTopGenres)
     return lt.subList(GenreSizeList,1,N)
 
-def TopNActorsByGenre(catalog, genre, N):
+def TopNActorsByGenre(catalog, genre, N): #Función Principal Requerimiento 8
     dictActores = {}
     GenreMap = catalog["MapListedIn"]
     Titles = me.getValue(mp.get(GenreMap,genre))
