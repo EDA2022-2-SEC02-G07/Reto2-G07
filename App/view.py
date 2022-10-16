@@ -322,7 +322,7 @@ def printreq8(catalog,genre,N):
     print('Actor, Movies, TV Shows')
     print(tabulate(printlist3,tablefmt="grid"))
 catalog = None
-size = "-small"
+size = "-large"
 type = "PROBING"
 FC = 0.5
 print('Tipo:', type, 'Factor de carga:', FC)
@@ -337,11 +337,13 @@ while True:
         if catalog == None:
             catalog = controller.newController(type,FC)
         time,memory = controller.loadData(catalog,size)
-        #print("Tiempo de ejecución:",str(time),"ms.")
-        #print("Memoria Usada:",str(memory),"kb.")
+        print("Tiempo de ejecución:",str(time),"ms.")
+        print("Memoria Usada:",str(memory),"kb.")
         printLoad(catalog["model"])
     elif int(inputs[0]) == 2:
         year = input("Ingrese el año: ")
+        print("Tiempo de ejecución:",str(time),"ms.")
+        print("Memoria Usada:",str(memory),"kb.")
         printreq1(catalog,year)
     elif int(inputs[0]) == 3:
         date = input("Ingrese la fecha: ")
