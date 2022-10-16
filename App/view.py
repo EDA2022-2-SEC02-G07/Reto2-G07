@@ -293,6 +293,7 @@ def printreq8(catalog,genre,N):
                 movie_list.append([title["release_year"],title["title"],title["director"]])
             movie_table = tabulate(movie_list,tablefmt="plain")
         else:
+            movie_list = [["release_year","title","director"]]
             first_movies = lt.subList(type['Movie'], 1, 3)
             last_movies = lt.subList(type['Movie'], lt.size(type['Movie']) - 2, 3)        
             for title in lt.iterator(first_movies):
