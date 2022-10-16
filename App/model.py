@@ -211,7 +211,6 @@ def TopNActorsByGenre(catalog, genre, N): #Función Principal Requerimiento 8
     dictActores = {}
     GenreMap = catalog["MapListedIn"]
     Titles = me.getValue(mp.get(GenreMap,genre))
-    ActorsMap = mp.newMap(maptype='PROBING', loadfactor=0.5)
     ActorList = lt.newList("ARRAY_LIST")
     for video in lt.iterator(Titles):
         for actor in video["cast"].split(","):
